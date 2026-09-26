@@ -17,10 +17,5 @@
   *Dies Irae* written backwards, black altar, inverted cross, emptied reliquary.
 
 ## Design notes
-- Built before the CLAUDE.md scene rules existed: no named demon/devil, fights, puzzles or
-  journal yet. Corridors are 5 ft (claustrophobic).
-
-## Open questions / TODO
-- Choose the demon/devil this crypt belongs to, then add 2–3 minor fights, 2–3 puzzles,
-  1–2 secrets, the set piece, and the read-aloud journal per CLAUDE.md.
-- Consider widening some corridors to 10/15 ft per the hallway rules.
+- This is the user's **test sandbox**, not an adventure scene; it is exempt from the CLAUDE.md
+  scene rules (no named fiend, fights, puzzles or journal needed). Corridors are 5 ft.

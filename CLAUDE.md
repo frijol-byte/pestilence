@@ -64,8 +64,31 @@ charnel houses, flagellant processions, lepers' hospices, dead-carts, walled abb
 villages, plague doctors, pilgrim roads, and a Church that has lost its answers. The plague is
 not only disease — it is a door the infernal has walked through.
 
-This is Golarion-compatible PF2e mechanically, but the setting is our own. Do not copy Paizo
-adventure text; reference Paizo compendium content by UUID only (ORC licensing).
+### Lore sources: real-world first, Pathfinder as engine
+**PF2e is the rules engine, not the lore.** Draw lore from real-world biblical, apocryphal and
+esoteric tradition; fall back on Pathfinder/Golarion lore only where it fills a gap and doesn't
+contradict the real-world material. Don't use Golarion places, gods or history.
+
+Preferred sources for fiends, angels, saints and symbolism:
+- **Scripture & apocrypha:** Revelation, Daniel, Ezekiel, Job, Isaiah, the Book of Enoch
+  (Watchers, Nephilim), Tobit (Asmodeus, Raphael).
+- **Demonology:** Collin de Plancy's *Dictionnaire Infernal* (French, a natural fit), the
+  *Ars Goetia* / *Lesser Key of Solomon*, Weyer's *Pseudomonarchia Daemonum*,
+  *Grimorium Verum*, Binsfeld's classification of demons by sin (Lucifer: pride, Mammon: greed,
+  Asmodeus: lust, Leviathan: envy, Beelzebub: gluttony, Satan: wrath, Belphegor: sloth).
+- **Esoteric & medieval:** Kabbalah (Qliphoth), the Pseudo-Dionysian angelic hierarchy,
+  hagiography (plague saints: Roch, Sebastian), the *Danse Macabre*, *Ars moriendi*,
+  medieval bestiaries, alchemical symbolism.
+
+"Demon" and "devil" are used in their **real-world sense** (largely interchangeable, and a
+fallen angel's rank matters more than its family), not in Pathfinder's Abyss-vs-Hell split.
+
+**Mapping to PF2e mechanics:** use whatever PF2e traits give the right mechanics
+(`fiend`, `unholy`, `demon`/`devil` for their weaknesses and interactions with holy effects,
+spells and items) and pick the trait for what it does in play, not for its Golarion lore.
+Record notable mappings in the creature's Notes.
+
+Do not copy Paizo adventure text; reference Paizo compendium content by UUID only (ORC licensing).
 
 ### Names
 Names must feel **French and medieval**:
@@ -95,6 +118,9 @@ Names must feel **French and medieval**:
 ## 3. Building scenes (adventure locations)
 
 A "scene" here means a full adventure location: map + Foundry Scene + journal + actors + items.
+
+**Exception:** *La Crypte de Saint-Roch* (`crypte-saint-roch`) is the user's **test sandbox**.
+It is exempt from these rules; don't expand it into a full scene unless asked.
 
 ### Structure — every scene must include
 - **One named Demon or Devil** that the whole location is centred on. The map, symbolism,
@@ -136,10 +162,6 @@ Every named or major enemy must have:
 2. **A big lore/roleplay weakness** that can be discovered and used — a name, a vow, a
    relic, a person it cannot harm, a sin it cannot resist indulging, a bargain that binds it.
    Seed clues to this weakness in the scene's puzzles/secrets.
-
-Note on terminology: in Pathfinder lore, *Abaddon* is the plane of **daemons**, and demons and
-devils are different fiend families (Abyss vs. Hell). Keep this straight when naming and
-choosing traits, or deliberately re-myth it and record the choice in `history/`.
 
 ### Custom enemies (all of them)
 - The actor's **Notes** must contain **at least one full paragraph** of information: origin,
