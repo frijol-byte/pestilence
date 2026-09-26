@@ -1,0 +1,5 @@
+node_modules/
+debug/
+dist/
+module/pestilence/packs/*/LOCK
+module/pestilence/packs/*/LOG*

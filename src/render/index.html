@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pestilence Map Renderer</title>
+<script type="importmap">{ "imports": { "three": "/three/build/three.module.js" } }</script>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #111; color: #ddd; font: 13px system-ui, sans-serif; }
+  header { position: sticky; top: 0; z-index: 2; display: flex; gap: 12px; align-items: center; padding: 8px 12px; background: #1b1b1b; border-bottom: 1px solid #333; }
+  #stage { position: relative; }
+  #stage canvas { display: block; width: 100%; height: auto; }
+  #overlay { position: absolute; inset: 0; pointer-events: none; }
+  button { background: #333; color: #eee; border: 1px solid #555; padding: 4px 10px; cursor: pointer; }
+  #status { color: #9c9; }
+</style>
+</head>
+<body>
+<header>
+  <strong id="title">…</strong>
+  <button id="save">Save to module</button>
+  <label><input type="checkbox" id="showWalls"> Show Foundry walls &amp; lights</label>
+  <span id="status">rendering…</span>
+</header>
+<div id="stage"></div>
+<script type="module" src="./render.mjs"></script>
+</body>
+</html>

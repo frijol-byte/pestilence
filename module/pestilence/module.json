@@ -1,0 +1,38 @@
+{
+  "id": "pestilence",
+  "title": "Pestilence",
+  "description": "A Pathfinder Second Edition adventure set in a plague-ravaged medieval France, where demons and devils feed on a dying kingdom.",
+  "version": "0.1.0",
+  "url": "https://github.com/frijol-byte/pestilence",
+  "manifest": "https://raw.githubusercontent.com/frijol-byte/pestilence/main/module/pestilence/module.json",
+  "download": "https://raw.githubusercontent.com/frijol-byte/pestilence/main/release/pestilence.zip",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14.365"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "pf2e",
+        "type": "system",
+        "compatibility": { "minimum": "8.0.0" }
+      }
+    ]
+  },
+  "packs": [
+    {
+      "name": "pestilence-scenes",
+      "label": "Pestilence: Scenes",
+      "path": "packs/pestilence-scenes",
+      "type": "Scene",
+      "ownership": { "PLAYER": "NONE", "ASSISTANT": "OWNER" }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Pestilence",
+      "sorting": "m",
+      "packs": ["pestilence-scenes"]
+    }
+  ]
+}
