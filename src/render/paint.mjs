@@ -61,7 +61,7 @@ function noiseLayer(w, h, scale, seed, toRGBA) {
   return c;
 }
 
-function speckle(ctx, w, h, amount, seed) {
+export function speckle(ctx, w, h, amount, seed) {
   const img = ctx.getImageData(0, 0, w, h);
   const d = img.data;
   for (let i = 0, p = 0; i < d.length; i += 4, p++) {

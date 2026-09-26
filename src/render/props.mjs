@@ -404,6 +404,178 @@ const BUILDERS = {
     g.position.set(p.x, 0, p.y);
     return g;
   },
+
+  /* ---------------- outdoor ---------------- */
+
+  waysideCross(p) {
+    // A weathered stone calvaire; its Christ has lost his face to the rain.
+    const g = new THREE.Group();
+    const stone = mat('#a39d8e', 0.95);
+    const step1 = box(0.7, 0.2, 0.7, mat('#7d776b', 0.95));
+    step1.position.y = 0.1;
+    const shaft = box(0.2, 2.3, 0.2, stone);
+    shaft.position.y = 1.35;
+    shaft.position.z = 0.1;
+    // the cross is laid out north-south so its shape reads from above
+    const upright = box(0.22, 0.2, 1.5, stone);
+    upright.position.set(0, 2.4, 0.1);
+    const bar = box(1.0, 0.2, 0.22, stone);
+    bar.position.set(0, 2.42, -0.2);
+    const lichen = mesh(new THREE.SphereGeometry(0.09, 8, 6), mat('#8a9a55'));
+    lichen.scale.set(1, 0.3, 1.3);
+    lichen.position.set(0.3, 2.52, -0.2);
+    g.add(step1, shaft, upright, bar, lichen);
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  overturnedCart(p, rand) {
+    // A farm cart flipped on its back across half the road: the knight's barricade. It is empty.
+    const g = new THREE.Group();
+    const bed = box(2.4, 0.12, 1.3, WOOD());
+    bed.position.y = 0.55;
+    g.add(bed);
+    for (const s of [-1, 1]) {
+      const side = box(2.4, 0.45, 0.07, WOOD());
+      side.position.set(0, 0.25, (s * 1.3) / 2);
+      g.add(side);
+      const wheel = mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.09, 18), mat('#3a281a'));
+      wheel.rotation.x = Math.PI / 2;
+      wheel.position.set(0.2, 1.05, s * 0.78);
+      g.add(wheel);
+    }
+    const axle = mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.7, 8), mat('#2c2016'));
+    axle.rotation.x = Math.PI / 2;
+    axle.position.set(0.2, 0.7, 0);
+    g.add(axle);
+    for (const s of [-1, 1]) {
+      const shaft = box(1.3, 0.07, 0.07, WOOD());
+      shaft.position.set(-1.8, 0.1, s * 0.35);
+      shaft.rotation.y = s * 0.12;
+      g.add(shaft);
+    }
+    g.rotation.y = Math.PI / 2 + (p.rot ?? 0);
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  willow(p, rand) {
+    const g = new THREE.Group();
+    const trunk = mesh(new THREE.CylinderGeometry(0.18, 0.28, 2.6, 10), mat('#4a3b2a'));
+    trunk.position.y = 1.3;
+    g.add(trunk);
+    const leaves = [mat('#6f7a3a'), mat('#7f8a44'), mat('#5d6a32'), mat('#8e9650')];
+    const n = Math.round(30 * p.r);
+    for (let i = 0; i < n; i++) {
+      const a = rand() * Math.PI * 2, d = Math.sqrt(rand()) * p.r * 0.85;
+      const blob = mesh(new THREE.SphereGeometry(0.35 + rand() * 0.35, 10, 8), leaves[(rand() * 4) | 0]);
+      blob.scale.set(1, 0.55, 1);
+      blob.position.set(Math.cos(a) * d, 2.3 + rand() * 0.9 - d * 0.35, Math.sin(a) * d);
+      g.add(blob);
+    }
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  boat(p) {
+    const g = new THREE.Group();
+    const hullShape = new THREE.Shape();
+    hullShape.moveTo(-1, 0);
+    hullShape.quadraticCurveTo(0, 0.5, 1, 0);
+    hullShape.quadraticCurveTo(0, -0.5, -1, 0);
+    const hull = mesh(new THREE.ExtrudeGeometry(hullShape, { depth: 0.35, bevelEnabled: false }), WOOD());
+    hull.geometry.rotateX(-Math.PI / 2);
+    g.add(hull);
+    const inner = new THREE.Shape();
+    inner.moveTo(-0.85, 0);
+    inner.quadraticCurveTo(0, 0.4, 0.85, 0);
+    inner.quadraticCurveTo(0, -0.4, -0.85, 0);
+    const bilge = mesh(new THREE.ShapeGeometry(inner), mat('#231a12'), { cast: false });
+    bilge.geometry.rotateX(-Math.PI / 2);
+    bilge.position.y = 0.36;
+    g.add(bilge);
+    for (const x of [-0.35, 0.3]) {
+      const bench = box(0.12, 0.04, 0.6, WOOD());
+      bench.position.set(x, 0.37, 0);
+      g.add(bench);
+    }
+    const oar = box(1.5, 0.03, 0.08, WOOD());
+    oar.position.set(0.2, 0.4, 0.1);
+    oar.rotation.y = 0.2;
+    g.add(oar);
+    g.rotation.y = p.rot ?? 0;
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  scarecrow(p) {
+    // Dressed in a dead man's red coat.
+    const g = new THREE.Group();
+    const pole = mesh(new THREE.CylinderGeometry(0.04, 0.05, 2.0, 6), WOOD());
+    pole.position.y = 1.0;
+    const arms = mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.3, 6), WOOD());
+    arms.rotation.z = Math.PI / 2;
+    arms.position.y = 1.55;
+    const coat = box(0.9, 0.7, 0.28, mat('#6a2a22'));
+    coat.position.y = 1.35;
+    const head = mesh(new THREE.SphereGeometry(0.18, 10, 8), mat('#b9a67a'));
+    head.position.y = 2.0;
+    const hat = mesh(new THREE.ConeGeometry(0.28, 0.25, 12), mat('#3d2d1c'));
+    hat.position.y = 2.2;
+    g.add(pole, arms, coat, head, hat);
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  scythe(p) {
+    // Left where it fell, mid-stroke.
+    const g = new THREE.Group();
+    const snath = mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.7, 6), WOOD());
+    snath.rotation.z = Math.PI / 2;
+    snath.position.y = 0.04;
+    const blade = mesh(new THREE.TorusGeometry(0.5, 0.025, 4, 24, Math.PI * 0.55), mat('#9a9ea2', 0.35, 0.8));
+    blade.rotation.x = -Math.PI / 2;
+    blade.scale.set(1, 1, 0.3);
+    blade.position.set(0.85, 0.04, 0);
+    g.add(snath, blade);
+    g.rotation.y = p.rot ?? 0;
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  milestone(p) {
+    const g = new THREE.Group();
+    const stone = box(0.45, 0.55, 0.3, mat('#9a9486'));
+    stone.position.y = 0.275;
+    const cap = mesh(new THREE.CylinderGeometry(0.225, 0.225, 0.3, 16, 1, false, 0, Math.PI), mat('#9a9486'));
+    cap.rotation.set(Math.PI / 2, 0, Math.PI / 2);
+    cap.position.y = 0.55;
+    g.add(stone, cap);
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  crows(p, rand) {
+    const g = new THREE.Group();
+    const black = mat('#121214', 0.6);
+    for (let i = 0; i < p.n; i++) {
+      const c = new THREE.Group();
+      const body = mesh(new THREE.SphereGeometry(0.08, 8, 6), black);
+      body.scale.set(1.6, 0.8, 0.9);
+      const head = mesh(new THREE.SphereGeometry(0.05, 8, 6), black);
+      head.position.set(0.13, 0.04, 0);
+      const beak = mesh(new THREE.ConeGeometry(0.018, 0.07, 6), mat('#2a2a2a'));
+      beak.rotation.z = -Math.PI / 2;
+      beak.position.set(0.2, 0.04, 0);
+      const tail = box(0.1, 0.01, 0.07, black);
+      tail.position.set(-0.15, 0.02, 0);
+      c.add(body, head, beak, tail);
+      c.rotation.y = rand() * Math.PI * 2;
+      c.position.set(p.x + rand() * p.w, 0.08, p.y + rand() * p.h);
+      g.add(c);
+    }
+    return g;
+  },
 };
 
 export function buildProp(p, rand) {

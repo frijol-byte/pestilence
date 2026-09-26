@@ -1,0 +1,33 @@
+/* Pestilence journal styling. Scoped to our own classes so nothing else is affected. */
+
+.pestilence-readaloud {
+  margin: 0.75em 0 1em;
+  padding: 0.6em 1em 0.6em 1.1em;
+  border-left: 4px solid #6b1414;
+  background: rgba(107, 20, 20, 0.07);
+  font-family: "Modesto Condensed", "Palatino Linotype", Palatino, Georgia, serif;
+  font-size: 1.05em;
+  font-style: italic;
+  line-height: 1.5;
+}
+.pestilence-readaloud p { margin: 0.4em 0; }
+
+.pestilence-sin {
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  border: 1px solid #8a6d1f;
+  border-radius: 4px;
+  background: rgba(138, 109, 31, 0.09);
+}
+.pestilence-sin p { margin: 0.2em 0; }
+.pestilence-sin ul { margin: 0.3em 0 0.2em; }
+
+.pestilence-epigraph {
+  margin: 0.5em 2em 1.2em;
+  border: none;
+  font-family: "Palatino Linotype", Palatino, Georgia, serif;
+  font-style: italic;
+  text-align: center;
+  opacity: 0.85;
+}
+.pestilence-epigraph .source { font-style: normal; font-size: 0.85em; letter-spacing: 0.05em; }

@@ -2,7 +2,7 @@
   "id": "pestilence",
   "title": "Pestilence",
   "description": "A Pathfinder Second Edition adventure set in a plague-ravaged medieval France, where demons and devils feed on a dying kingdom.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "url": "https://github.com/frijol-byte/pestilence",
   "manifest": "https://raw.githubusercontent.com/frijol-byte/pestilence/main/module/pestilence/module.json",
   "download": "https://raw.githubusercontent.com/frijol-byte/pestilence/main/release/pestilence.zip",
@@ -15,24 +15,69 @@
       {
         "id": "pf2e",
         "type": "system",
-        "compatibility": { "minimum": "8.0.0" }
+        "compatibility": {
+          "minimum": "8.0.0"
+        }
       }
     ]
   },
   "packs": [
     {
+      "name": "pestilence-journals",
+      "label": "Pestilence: Journals",
+      "path": "packs/pestilence-journals",
+      "type": "JournalEntry",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
       "name": "pestilence-scenes",
       "label": "Pestilence: Scenes",
       "path": "packs/pestilence-scenes",
       "type": "Scene",
-      "ownership": { "PLAYER": "NONE", "ASSISTANT": "OWNER" }
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "pestilence-actors",
+      "label": "Pestilence: Actors",
+      "path": "packs/pestilence-actors",
+      "type": "Actor",
+      "system": "pf2e",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "pestilence-items",
+      "label": "Pestilence: Items",
+      "path": "packs/pestilence-items",
+      "type": "Item",
+      "system": "pf2e",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      }
     }
   ],
   "packFolders": [
     {
       "name": "Pestilence",
       "sorting": "m",
-      "packs": ["pestilence-scenes"]
+      "packs": [
+        "pestilence-journals",
+        "pestilence-scenes",
+        "pestilence-actors",
+        "pestilence-items"
+      ]
     }
+  ],
+  "styles": [
+    "styles/pestilence.css"
   ]
 }

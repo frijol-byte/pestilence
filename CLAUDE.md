@@ -117,12 +117,20 @@ Names must feel **French and medieval**:
 
 ## 3. Building scenes (adventure locations)
 
-A "scene" here means a full adventure location: map + Foundry Scene + journal + actors + items.
+A "scene" here means an adventure location or story beat: any mix of map + Foundry Scene +
+journal + actors + items.
 
-**Exception:** *La Crypte de Saint-Roch* (`crypte-saint-roch`) is the user's **test sandbox**.
-It is exempt from these rules; don't expand it into a full scene unless asked.
+### Scene types
+- **`full_scene`** — only scenes the **user explicitly designates** as `full_scene`. These are
+  the major set-piece locations and must follow the full structure below.
+- **Smaller scenes** (everything else) — connective tissue around the full scenes: story beats,
+  travel, roleplay, single encounters, atmosphere. No required structure; build what the user
+  describes. Never assume a scene is a `full_scene`; ask if unclear.
 
-### Structure — every scene must include
+**Sandbox:** *La Crypte de Saint-Roch* (`crypte-saint-roch`) is the user's **test sandbox**.
+Don't expand it into a scene unless asked.
+
+### Structure: every `full_scene` must include
 - **One named Demon or Devil** that the whole location is centred on. The map, symbolism,
   minor enemies, puzzles and secrets should all point back to it (its sin, its domain, its
   bargain).
@@ -137,6 +145,21 @@ It is exempt from these rules; don't expand it into a full scene unless asked.
 
 Budget encounters with PF2e XP (GM Core): minor fights typically Low–Moderate, set piece
 Severe (Extreme only if the players have had a way to learn/exploit the weakness).
+
+### The Sin tracker (party-wide)
+The party has a **Sinful ↔ Sinless** score, kept in the user's own tool (don't build one).
+It will later grant bonuses/penalties.
+
+- **+1 (Sinless):** resolving a situation **without violence** (mercy, charity, persuasion,
+  sacrifice, clever avoidance).
+- **−1 (Sinful):** committing **unnecessary violence** (killing the surrendered, the harmless,
+  the desperate; violence where a peaceful path was clearly open).
+- **Design implication:** encounters with non-demonic foes (desperate peasants, bandits,
+  penitents, the sick) should usually offer at least one **peaceful resolution**, with
+  morale/surrender thresholds on the enemies.
+- **In journals:** add a GM-only **Sin tracker** callout wherever a scene offers a ±1, stating
+  the exact trigger (e.g. "+1 if the bandits are fed or allowed to flee; −1 if a surrendered
+  bandit is killed").
 
 ### Journal entries
 - Every scene gets a journal with **rich, evocative read-aloud text** for each area, written
@@ -196,6 +219,9 @@ Maps are **generated from data**, so the image and the Foundry walls always alig
 - `src/render/` — Three.js renderer (top-down orthographic): `paint.mjs` (2D procedural
   textures and symbolic floor features), `props.mjs` (3D props), `render.mjs` (scene, lighting,
   save, debug overlay).
+- Outdoor maps (`kind: 'outdoor'`) are horizontal terrain `bands` (river, meadow, road, wheat)
+  with exact row ranges, a `sun` direction, painted `features` and props; they have no walls.
+  Painted in `src/render/paint-outdoor.mjs`.
 - `tools/build-packs.mjs` — writes Scenes (with walls, doors, lights) into the LevelDB compendium.
 - `tools/package.py` — zips the module into `release/pestilence.zip`.
 
@@ -214,6 +240,22 @@ Rules:
   magical lights mostly to Foundry (baked at reduced strength).
 - Every map should carry the scene's symbolism in its floor features and props.
 
+### Content pipeline (journals, actors, items)
+Content is authored as JS modules and compiled by `npm run build` into four compendiums:
+`pestilence-journals`, `pestilence-scenes`, `pestilence-actors`, `pestilence-items`.
+
+- `src/content/journals/*.mjs`, `src/content/actors/*.mjs`, `src/content/items/*.mjs` — each
+  default-exports an **array of pack entries** built with the helpers in `src/lib/pf2e.mjs`:
+  `npc()` + `strike()` / `ability()` / `lore()`, `affliction()`, `equipment()`, `journal()`,
+  and the journal snippets `readAloud()`, `sinTracker()`, `epigraph()`.
+- `src/lib/ids.mjs` — deterministic ids and `uuid.actor/item/journal/page/scene(slug)` for
+  cross-links; `PF2E.*` holds verified UUIDs into the PF2e system compendiums (conditions,
+  equipment, NPC Core). Add new PF2e UUIDs there after verifying them against the pf2e repo.
+- The build **fails on any broken `@UUID` link** into this module.
+- Journal styling lives in `module/pestilence/styles/pestilence.css`.
+- PF2e reference: the `foundryvtt/pf2e` repo's default branch (`v14-dev`) is system 8.5.1;
+  check document shapes against `packs/pf2e/...` there before inventing fields.
+
 ---
 
 ## 6. Foundry v14 technical notes (hard-won — don't regress)
@@ -229,6 +271,9 @@ Rules:
 - Document ids are deterministic (`fid(slug)` in `build-packs.mjs`) so rebuilds don't orphan
   world copies — keep slugs stable.
 - Pack files are binary (`.gitattributes`); never let git convert their line endings.
+- PF2e Actors/Items must carry `_stats` (coreVersion/systemId/systemVersion) and
+  `system._migration.version` (currently `0.959`) or PF2e migrates them on import; the
+  builders in `src/lib/pf2e.mjs` do this.
 
 ---
 

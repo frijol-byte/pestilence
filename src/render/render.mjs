@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { buildGrid, traceWalls, doorSegment, validate } from '../lib/grid.mjs';
 import { paintFloor, paintRock, paintPillarTop, mulberry32 } from './paint.mjs';
+import { paintOutdoor } from './paint-outdoor.mjs';
 import { buildProp, buildDoor, buildStairs, buildRubble, flame } from './props.mjs';
 
 const params = new URLSearchParams(location.search);
@@ -9,21 +10,25 @@ const def = (await import(`../maps/${mapId}.mjs`)).default;
 const status = document.getElementById('status');
 document.getElementById('title').textContent = def.name;
 
-const grid = buildGrid(def);
-const errors = validate(def, grid);
-if (errors.length) {
-  status.textContent = errors.join(' | ');
-  status.style.color = '#f66';
-  throw new Error(errors.join('\n'));
+// Outdoor maps are terrain bands with no walls; dungeon maps are carved from solid rock.
+const outdoor = def.kind === 'outdoor';
+const W = def.width, H = def.height, PX = def.gridSize;
+const lights = def.lights ?? [];
+let grid = null, doors = [], walls = [];
+if (!outdoor) {
+  grid = buildGrid(def);
+  const errors = validate(def, grid);
+  if (errors.length) {
+    status.textContent = errors.join(' | ');
+    status.style.color = '#f66';
+    throw new Error(errors.join('\n'));
+  }
+  doors = def.doors ?? [];
+  walls = traceWalls(grid, doors);
 }
-const doors = def.doors ?? [];
-const walls = traceWalls(grid, doors);
-const { W, H } = grid;
-const PX = def.gridSize;
 
 /* ---------------- textures ---------------- */
-const floorPaint = paintFloor(def, grid, walls, doors);
-const rockPaint = paintRock(def, grid, walls);
+const floorPaint = outdoor ? paintOutdoor(def) : paintFloor(def, grid, walls, doors);
 
 function tex(canvas, srgb = true) {
   const t = new THREE.CanvasTexture(canvas);
@@ -60,8 +65,9 @@ const LIGHT_Y = 2.2;
   const m = new THREE.MeshStandardMaterial({
     map: tex(floorPaint.color),
     bumpMap: tex(floorPaint.bump, false),
-    bumpScale: 3,
+    bumpScale: outdoor ? 1.5 : 3,
     roughness: 0.93,
+    ...(outdoor ? { roughnessMap: tex(floorPaint.rough, false) } : {}),
   });
   const floor = new THREE.Mesh(g, m);
   floor.position.set(W / 2, 0, H / 2);
@@ -70,7 +76,8 @@ const LIGHT_Y = 2.2;
 }
 
 // Rock mass: unlit painted top plane + invisible-from-above boxes that cast shadows.
-{
+if (!outdoor) {
+  const rockPaint = paintRock(def, grid, walls);
   const g = new THREE.PlaneGeometry(W, H);
   g.rotateX(-Math.PI / 2);
   const top = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ map: tex(rockPaint), transparent: true, alphaTest: 0.5 }));
@@ -92,8 +99,8 @@ const LIGHT_Y = 2.2;
   scene.add(inst);
 }
 
-// Pillars: stone piers whose top face carries a carved cross.
-{
+// Pillars: stone piers whose top face carries a carved quatrefoil.
+if (!outdoor) {
   const topMat = new THREE.MeshBasicMaterial({ map: tex(paintPillarTop()) });
   const side = new THREE.MeshStandardMaterial({ color: '#4d4740' });
   const mats = [side, side, topMat, side, side, side];
@@ -117,21 +124,32 @@ for (const p of def.props ?? []) {
 }
 
 /* ---------------- lighting ---------------- */
-scene.add(new THREE.AmbientLight('#8a93a6', 1.35));
-scene.add(new THREE.HemisphereLight('#b8c0d0', '#2a2420', 0.7));
+function keyLight(color, intensity, dir) {
+  const key = new THREE.DirectionalLight(color, intensity);
+  key.position.set(W / 2 + dir.x * 40, dir.y * 40, H / 2 + dir.z * 40);
+  key.target.position.set(W / 2, 0, H / 2);
+  key.castShadow = true;
+  key.shadow.mapSize.set(4096, 4096);
+  Object.assign(key.shadow.camera, { left: -W, right: W, top: H, bottom: -H, near: 1, far: 150 });
+  key.shadow.bias = -0.0005;
+  key.shadow.radius = 4;
+  scene.add(key, key.target);
+}
 
-// A soft, very high key light so props read with depth even far from any light source.
-const key = new THREE.DirectionalLight('#c9cfe0', 0.55);
-key.position.set(W / 2 - 6, 40, H / 2 - 10);
-key.target.position.set(W / 2, 0, H / 2);
-key.castShadow = true;
-key.shadow.mapSize.set(4096, 4096);
-Object.assign(key.shadow.camera, { left: -W, right: W, top: H, bottom: -H, near: 1, far: 100 });
-key.shadow.bias = -0.0005;
-key.shadow.radius = 4;
-scene.add(key, key.target);
+if (outdoor) {
+  // Sun from def.sun (azimuth clockwise from north, elevation above the horizon).
+  const az = ((def.sun?.azimuth ?? 200) * Math.PI) / 180, el = ((def.sun?.elevation ?? 45) * Math.PI) / 180;
+  scene.add(new THREE.HemisphereLight('#d6e2f0', '#6b5a3a', 1.3));
+  scene.add(new THREE.AmbientLight('#ffffff', 0.35));
+  keyLight('#ffe6bf', 2.4, { x: Math.sin(az) * Math.cos(el), y: Math.sin(el), z: -Math.cos(az) * Math.cos(el) });
+} else {
+  scene.add(new THREE.AmbientLight('#8a93a6', 1.35));
+  scene.add(new THREE.HemisphereLight('#b8c0d0', '#2a2420', 0.7));
+  // A soft, very high key light so props read with depth even far from any light source.
+  keyLight('#c9cfe0', 0.55, { x: -6 / 40, y: 1, z: -10 / 40 });
+}
 
-for (const l of def.lights) {
+for (const l of lights) {
   const cells = l.dim / 5;
   // Magical lights are left mostly to Foundry's animated lighting; bake only a hint of them.
   const baked = l.anim === 'ghost' || l.anim === 'pulse' ? 0.55 : 1;
@@ -152,7 +170,7 @@ for (const l of def.lights) {
 
 /* ---------------- render + save ---------------- */
 renderer.render(scene, camera);
-status.textContent = `rendered ${W * PX}×${H * PX}px · ${walls.length} wall runs · ${doors.length} doors · ${def.lights.length} lights`;
+status.textContent = `rendered ${W * PX}×${H * PX}px · ${walls.length} wall runs · ${doors.length} doors · ${lights.length} lights`;
 window.__rendered = true;
 
 async function blobOf(canvas, type = 'image/webp', q = 0.9) {
@@ -192,7 +210,7 @@ document.getElementById('stage').appendChild(overlay);
   const line = ([a, b, c, d], color) => { o.strokeStyle = color; o.beginPath(); o.moveTo(a * PX, b * PX); o.lineTo(c * PX, d * PX); o.stroke(); };
   for (const w of walls) line(w, '#ff2d55');
   for (const d of doors) line(doorSegment(d), d.type === 'secret' ? '#d05bff' : d.state === 'locked' ? '#ffcc00' : '#33e07a');
-  for (const l of def.lights) {
+  for (const l of lights) {
     o.strokeStyle = l.color; o.lineWidth = 3;
     o.beginPath(); o.arc(l.x * PX, l.y * PX, (l.dim / 5) * PX, 0, Math.PI * 2); o.stroke();
     o.fillStyle = l.color; o.beginPath(); o.arc(l.x * PX, l.y * PX, 10, 0, Math.PI * 2); o.fill();
