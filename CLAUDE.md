@@ -80,6 +80,9 @@ Preferred sources for fiends, angels, saints and symbolism:
   hagiography (plague saints: Roch, Sebastian), the *Danse Macabre*, *Ars moriendi*,
   medieval bestiaries, alchemical symbolism.
 
+**Glossary:** `lore/glossary-demons-devils-angels.md` lists fiends, angels and plague saints by
+source, with opposing saints (ready-made lore weaknesses). Consult it when naming a fiend.
+
 "Demon" and "devil" are used in their **real-world sense** (largely interchangeable, and a
 fallen angel's rank matters more than its family), not in Pathfinder's Abyss-vs-Hell split.
 
@@ -300,6 +303,7 @@ Never push or make the repo/content public-facing in new ways without asking; th
 ```
 CLAUDE.md
 history/                  change log (timestamped .md)
+lore/                     setting reference (glossary of fiends, angels, saints)
 src/maps/                 map definitions (one .mjs per map)
 src/lib/grid.mjs          shared geometry (walls, validation)
 src/render/               Three.js map renderer
