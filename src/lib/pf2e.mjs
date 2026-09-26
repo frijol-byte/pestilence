@@ -3,7 +3,9 @@
 //
 // Every Actor/Item is stamped with `_stats` and `system._migration` exactly like the PF2e
 // system's own pack builder, so neither Foundry nor PF2e runs migrations over our data.
-import { fid } from './ids.mjs';
+import { fid, PF2E } from './ids.mjs';
+
+const PF2E_CONDITIONS = PF2E.condition;
 
 export const CORE_VERSION = '14.365';
 export const SYSTEM_VERSION = '8.5.1';
@@ -156,34 +158,71 @@ export function npc(c) {
 }
 
 /**
- * PF2e affliction item (tracked disease/poison). stages: [{ conditions: [[slug, value]], damage: [[formula, type]],
- * duration: [n, 'days'] }]
+ * Staged affliction as a PF2e **effect** with a counter badge (the PF2e "affliction" item type
+ * is disabled in release builds of the system, so never use it).
+ *
+ * Badge value 1 is the onset; value n+1 is stage n. Each stage's conditions are granted in
+ * memory while the badge sits on that stage, so clicking the badge up/down on the effects panel
+ * moves the creature through the disease.
+ *
+ * stages: [{ label, conditions: [[slug, value?]] }]
  */
-export function affliction(a) {
+export function stagedEffect(a) {
   const id = fid(`item:${a.slug}`);
+  const conditionUuid = (slug) => {
+    const u = PF2E_CONDITIONS[slug];
+    if (!u) throw new Error(`${a.slug}: unknown condition "${slug}" (add it to PF2E.condition in ids.mjs)`);
+    return u;
+  };
+
+  // One GrantItem per (condition, value) run of consecutive badge values.
+  const rules = [];
+  const badgeOf = (stageIndex) => stageIndex + 2; // stage 1 -> badge 2
+  const runs = new Map();
+  a.stages.forEach((st, i) => {
+    for (const [slug, value = null] of st.conditions ?? []) {
+      const k = `${slug}|${value}`;
+      const run = runs.get(k)?.at(-1);
+      if (run && run.to === badgeOf(i) - 1) run.to = badgeOf(i);
+      else runs.set(k, [...(runs.get(k) ?? []), { slug, value, from: badgeOf(i), to: badgeOf(i) }]);
+    }
+  });
+  for (const list of runs.values()) {
+    for (const { slug, value, from, to } of list) {
+      const predicate =
+        from === to
+          ? [`parent:badge:value:${from}`]
+          : [{ gte: ['parent:badge:value', from] }, { lte: ['parent:badge:value', to] }];
+      rules.push({
+        key: 'GrantItem',
+        uuid: conditionUuid(slug),
+        inMemoryOnly: true,
+        predicate,
+        ...(value !== null ? { alterations: [{ mode: 'override', property: 'badge-value', value }] } : {}),
+      });
+    }
+  }
+
   const item = {
     _id: id,
     name: a.name,
-    type: 'affliction',
+    type: 'effect',
     img: a.img,
     system: {
+      badge: {
+        type: 'counter',
+        value: 1,
+        min: 1,
+        max: a.stages.length + 1,
+        labels: [a.onsetLabel ?? 'Onset', ...a.stages.map((st, i) => st.label ?? `Stage ${i + 1}`)],
+      },
       description: { value: html(a.description), gm: html(a.gmDescription) },
+      duration: { value: -1, unit: 'unlimited', expiry: null, sustained: false },
       level: { value: a.level },
-      traits: { value: a.traits, otherTags: [] },
-      save: { type: a.save.type, value: a.save.dc },
-      status: { onset: !!a.onset, stage: 1, progress: 0 },
-      onset: a.onset ? { value: a.onset[0], unit: a.onset[1] } : null,
-      stages: a.stages.map((s) => ({
-        damage: (s.damage ?? []).map(([formula, damageType]) => ({ formula, damageType, category: null })),
-        conditions: (s.conditions ?? []).map(([slug, value = null]) => ({ slug, value, linked: true })),
-        effects: [],
-        duration: { value: s.duration?.[0] ?? 1, unit: s.duration?.[1] ?? 'days' },
-      })),
-      duration: { value: -1, unit: 'unlimited', expiry: null },
+      rules,
       start: { value: 0, initiative: null },
-      fromSpell: false,
-      context: null,
-      rules: [],
+      tokenIcon: { show: true },
+      traits: { value: a.traits ?? [], otherTags: [] },
       slug: a.slug,
       publication: publication(),
       _migration: migration(),

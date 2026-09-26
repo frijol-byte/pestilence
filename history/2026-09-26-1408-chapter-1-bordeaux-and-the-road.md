@@ -27,7 +27,9 @@ Party: 4 PCs, level 2. Smaller scenes (not `full_scene`).
   - **Mahaut** (L-1): plague-stricken lure; buboes spotted on DC 12 Perception; Pestilent Touch
     (DC 20 Fortitude or exposed to La Peste Noire).
 - **Items** (`src/content/items/`):
-  - **La Peste Noire**: PF2e affliction (disease), level 3, Fortitude DC 20, onset 1 day, six stages
+  - **La Peste Noire**: PF2e effect (disease) with a stage badge (Onset → Stage 6), level 3,
+    Fortitude DC 20; conditions per stage are granted automatically. (0.2.1: was an affliction
+    item, which PF2e disables in release builds, so it could not be imported.)
   - **Lettre de l'Archevêque**: letter + safe-conduct (+2 item bonus to Diplomacy with clergy, toggle)
   - **Chevalière de Quinsac**: Bertrand's signet ring (10 gp)
 

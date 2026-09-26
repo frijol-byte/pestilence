@@ -274,6 +274,9 @@ Content is authored as JS modules and compiled by `npm run build` into four comp
 - PF2e Actors/Items must carry `_stats` (coreVersion/systemId/systemVersion) and
   `system._migration.version` (currently `0.959`) or PF2e migrates them on import; the
   builders in `src/lib/pf2e.mjs` do this.
+- **Never use the PF2e `affliction` item type**: it is disabled in release builds (it throws on
+  load and can't be imported or dragged). Diseases, poisons and curses are `effect` items with a
+  counter badge per stage; use `stagedEffect()` in `src/lib/pf2e.mjs`.
 
 ---
 

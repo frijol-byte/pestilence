@@ -31,7 +31,7 @@ ${epigraph('For death is come up into our windows, and is entered into our palac
   <li><strong>Party.</strong> Four characters of 2nd level.</li>
   <li><strong>Tone.</strong> Apocalyptic, biblical, grieving. Let silence do the work: describe what is missing (bells, voices, market cries) as much as what is there.</li>
   <li><strong>Pacing.</strong> The city holds nothing of value. If the players linger, escalate the dread (see <em>La Ville Silencieuse</em>) until leaving feels like mercy.</li>
-  <li><strong>The plague.</strong> Rules for ${peste} are on the item. No one in the city should be touchable without risk; anyone who touches the dying bare-handed is exposed.</li>
+  <li><strong>The plague.</strong> Rules for ${peste} are on its effect: drag it onto an exposed creature. No one in the city should be touchable without risk; anyone who touches the dying bare-handed is exposed.</li>
 </ul>
 ${sinTracker(
   '<strong>+1</strong> if the party performs an act of costly charity in the city (gives away its own food or money to the dying, carries a corpse to the pit, sits with the dying).',

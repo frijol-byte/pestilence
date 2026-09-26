@@ -1,24 +1,23 @@
-import { affliction } from '../../lib/pf2e.mjs';
+import { stagedEffect } from '../../lib/pf2e.mjs';
 import { PF2E, link } from '../../lib/ids.mjs';
 
-// La Peste Noire — the campaign's central affliction.
+// La Peste Noire: the campaign's central disease, as a PF2e effect with a stage badge.
 // Level 3 disease, DC 20: a hard DC for a level 2 party ("harsh"). Tune per CLAUDE.md with a
 // single-number change if it proves too lethal; don't log that in history/.
-export default affliction({
+export default stagedEffect({
   slug: 'la-peste-noire',
   name: 'La Peste Noire',
   img: 'systems/pf2e/icons/spells/divine-plagues.webp',
   level: 3,
   traits: ['disease'],
-  save: { type: 'fortitude', dc: 20 },
-  onset: [1, 'days'],
+  onsetLabel: 'Onset (incubating)',
   stages: [
-    { conditions: [['fatigued']], duration: [1, 'days'] },
-    { conditions: [['fatigued'], ['enfeebled', 1]], duration: [1, 'days'] },
-    { conditions: [['fatigued'], ['enfeebled', 2], ['drained', 1]], duration: [1, 'days'] },
-    { conditions: [['sickened', 1], ['enfeebled', 2], ['drained', 2]], duration: [1, 'days'] },
-    { conditions: [['unconscious']], duration: [1, 'days'] },
-    { conditions: [], duration: [1, 'days'] },
+    { label: 'Stage 1: Fever', conditions: [['fatigued']] },
+    { label: 'Stage 2: Buboes', conditions: [['fatigued'], ['enfeebled', 1]] },
+    { label: 'Stage 3: Black spots', conditions: [['fatigued'], ['enfeebled', 2], ['drained', 1]] },
+    { label: 'Stage 4: Coughing blood', conditions: [['sickened', 1], ['enfeebled', 2], ['drained', 2]] },
+    { label: 'Stage 5: Death-sleep', conditions: [['unconscious']] },
+    { label: 'Stage 6: Dead', conditions: [] },
   ],
   description: `
 <p><em>"And I looked, and behold a pale horse: and his name that sat on him was Death, and Hell followed with him."</em> (Revelation 6:8)</p>
@@ -34,6 +33,11 @@ export default affliction({
 <p><strong>Stage 5</strong> ${link(PF2E.condition.unconscious, 'Unconscious')}: delirium and the death-sleep (1 day)</p>
 <p><strong>Stage 6</strong> dead</p>`,
   gmDescription: `
-<p><strong>Running the plague.</strong> Drag this item onto an exposed creature: the PF2e affliction tracker handles onset and stages. Roll the save once per day. A success reduces the stage by 1, a critical success by 2; a failure increases it by 1, a critical failure by 2.</p>
+<p><strong>Running the plague.</strong> Drag this effect onto an exposed creature's token or sheet. It starts at <em>Onset</em>. After 1 day, and then once per day, the creature rolls the Fortitude save:</p>
+<ul>
+  <li>Critical success: down 2 stages. Success: down 1 stage. Failure: up 1 stage. Critical failure: up 2 stages.</li>
+  <li>Change the stage on the effects panel: <strong>left-click</strong> the effect icon to raise it, <strong>right-click</strong> to lower it. The stage's conditions are applied and removed automatically.</li>
+  <li>Falling below Stage 1 (after onset) means the creature has recovered: delete the effect. At Stage 6, the creature dies.</li>
+</ul>
 <p><strong>Earthly remedies</strong> (Treat Disease, theriac, bleeding the buboes) grant the usual bonuses and never more. The plague is a judgment as much as a sickness: true cures come from relics, saints and acts of faith found later in the campaign. Keep that hope alive but scarce.</p>`,
 });
