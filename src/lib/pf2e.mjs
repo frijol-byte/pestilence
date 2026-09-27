@@ -132,7 +132,7 @@ export function npc(c) {
         publication: publication(),
       },
       initiative: { statistic: 'perception' },
-      perception: { mod: c.perception, details: c.perceptionDetails ?? '', senses: [] },
+      perception: { mod: c.perception, details: c.perceptionDetails ?? '', senses: (c.senses ?? []).map((type) => ({ type })) },
       resources: {},
       saves: {
         fortitude: { value: c.saves.fort, saveDetail: '' },
@@ -224,6 +224,78 @@ export function stagedEffect(a) {
       tokenIcon: { show: true },
       traits: { value: a.traits ?? [], otherTags: [] },
       slug: a.slug,
+      publication: publication(),
+      _migration: migration(),
+    },
+    effects: [],
+    folder: null,
+    sort: 0,
+    ownership: { default: 0 },
+    flags: {},
+    _stats: { ...stats(), compendiumSource: null },
+  };
+  return [[`!items!${id}`, item]];
+}
+
+/** Plain PF2e effect (no stages). rules: PF2e rule elements. */
+export function effect(e) {
+  const id = fid(`item:${e.slug}`);
+  const item = {
+    _id: id,
+    name: e.name,
+    type: 'effect',
+    img: e.img,
+    system: {
+      badge: null,
+      description: { value: html(e.description), gm: html(e.gmDescription) },
+      duration: { value: -1, unit: 'unlimited', expiry: null, sustained: false },
+      level: { value: e.level ?? 1 },
+      rules: e.rules ?? [],
+      start: { value: 0, initiative: null },
+      tokenIcon: { show: true },
+      traits: { value: e.traits ?? [], otherTags: [] },
+      slug: e.slug,
+      publication: publication(),
+      _migration: migration(),
+    },
+    effects: [],
+    folder: null,
+    sort: 0,
+    ownership: { default: 0 },
+    flags: {},
+    _stats: { ...stats(), compendiumSource: null },
+  };
+  return [[`!items!${id}`, item]];
+}
+
+/** PF2e ritual (a `spell` item with ritual data). */
+export function ritual(r) {
+  const id = fid(`item:${r.slug}`);
+  const item = {
+    _id: id,
+    name: r.name,
+    type: 'spell',
+    img: r.img,
+    system: {
+      area: r.area ?? null,
+      cost: { value: r.cost ?? '' },
+      counteraction: false,
+      damage: {},
+      defense: null,
+      description: { value: html(r.description), gm: html(r.gmDescription) },
+      duration: { value: r.duration ?? '', sustained: false },
+      level: { value: r.rank },
+      range: { value: r.range ?? '' },
+      requirements: r.requirements ?? '',
+      ritual: {
+        primary: { check: r.primary },
+        secondary: { casters: r.secondaryCasters ?? 0, checks: r.secondary ?? '' },
+      },
+      rules: [],
+      target: { value: r.target ?? '' },
+      time: { value: r.time },
+      traits: { rarity: r.rarity ?? 'unique', traditions: [], value: r.traits ?? [], otherTags: [] },
+      slug: r.slug,
       publication: publication(),
       _migration: migration(),
     },

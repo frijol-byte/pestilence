@@ -519,4 +519,105 @@ const FEATURES = {
     }
     ctx.restore();
   },
+
+  stainedLight(ctx, f, PX, rand) {
+    // Coloured light from a window falling across the floor (slanting in from the south).
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    const w = PX * 0.34;
+    f.colors.forEach((c, i) => {
+      const x0 = (f.x - 0.5) * PX + i * w;
+      ctx.fillStyle = c;
+      ctx.globalAlpha = 0.28;
+      ctx.beginPath();
+      ctx.moveTo(x0, (f.y + 0.7) * PX);
+      ctx.lineTo(x0 + w, (f.y + 0.7) * PX);
+      ctx.lineTo(x0 + w - PX * 0.5, (f.y - 1.6) * PX);
+      ctx.lineTo(x0 - PX * 0.5, (f.y - 1.6) * PX);
+      ctx.closePath();
+      ctx.fill();
+    });
+    ctx.restore();
+  },
+
+  tombSlab(ctx, f, PX) {
+    // An abbot's incised grave slab: figure with crozier, and an inscription.
+    const cx = f.x * PX, cy = f.y * PX, w = PX * 0.9, h = PX * 1.9;
+    ctx.save();
+    ctx.fillStyle = '#5e5850';
+    ctx.fillRect(cx - w / 2, cy - h / 2, w, h);
+    ctx.strokeStyle = '#2e2a26';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(cx - w / 2 + 6, cy - h / 2 + 6, w - 12, h - 12);
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(cx, cy - h * 0.28, PX * 0.11, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx - PX * 0.18, cy - h * 0.18); ctx.lineTo(cx - PX * 0.24, cy + h * 0.3);
+    ctx.lineTo(cx + PX * 0.24, cy + h * 0.3); ctx.lineTo(cx + PX * 0.18, cy - h * 0.18); ctx.closePath();
+    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx + PX * 0.28, cy + h * 0.32); ctx.lineTo(cx + PX * 0.28, cy - h * 0.32);
+    ctx.arc(cx + PX * 0.2, cy - h * 0.32, PX * 0.08, 0, Math.PI, true); ctx.stroke();
+    ctx.translate(cx - w / 2 + 12, cy);
+    ctx.rotate(-Math.PI / 2);
+    ctx.font = `600 ${PX * 0.11}px Georgia, serif`;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#2e2a26';
+    ctx.fillText(f.text, 0, 4, h - 20);
+    ctx.restore();
+  },
+
+  wineTrail(ctx, f, PX, rand) {
+    // Spilled wine, dark as old blood, dragged and splashed across the stone.
+    const [x0, y0] = f.from, [x1, y1] = f.to;
+    ctx.save();
+    const n = Math.round(Math.hypot(x1 - x0, y1 - y0) * 14);
+    for (let i = 0; i < n; i++) {
+      const t = i / Math.max(1, n - 1);
+      const x = (x0 + (x1 - x0) * t) * PX + (rand() - 0.5) * PX * 0.25;
+      const y = (y0 + (y1 - y0) * t) * PX + (rand() - 0.5) * PX * 0.25;
+      ctx.fillStyle = `rgba(${80 + rand() * 30},10,${24 + rand() * 12},${0.2 + rand() * 0.25})`;
+      ctx.beginPath();
+      ctx.ellipse(x, y, PX * (0.04 + rand() * 0.1), PX * (0.03 + rand() * 0.06), rand() * 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  },
+
+  graffiti(ctx, f, PX, rand) {
+    // Words daubed on the floor in wine, by a drunk hand.
+    ctx.save();
+    ctx.translate(f.x * PX, f.y * PX);
+    ctx.rotate(f.rot ?? 0);
+    ctx.font = `italic 700 ${f.size * PX}px Georgia, "Times New Roman", serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = f.color;
+    ctx.globalAlpha = 0.8;
+    let x = -ctx.measureText(f.text).width / 2;
+    for (const ch of f.text) {
+      const w = ctx.measureText(ch).width;
+      ctx.save();
+      ctx.translate(x + w / 2, (rand() - 0.5) * f.size * PX * 0.25);
+      ctx.rotate((rand() - 0.5) * 0.25);
+      ctx.fillText(ch, 0, 0);
+      ctx.restore();
+      x += w;
+      if (rand() < 0.3) {
+        ctx.fillRect(x - w / 2, f.size * PX * 0.35, 2, f.size * PX * (0.2 + rand() * 0.5));
+      }
+    }
+    ctx.restore();
+  },
+
+  flies(ctx, f, PX, rand) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(12,12,14,0.85)';
+    for (let i = 0; i < f.n; i++) {
+      const a = rand() * Math.PI * 2, d = Math.sqrt(rand()) * f.r * PX;
+      ctx.beginPath();
+      ctx.ellipse(f.x * PX + Math.cos(a) * d, f.y * PX + Math.sin(a) * d, 2.2, 1.5, rand() * 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  },
 };

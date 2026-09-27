@@ -576,6 +576,200 @@ const BUILDERS = {
     }
     return g;
   },
+
+  /* ---------------- church ---------------- */
+
+  cask(p) {
+    const g = new THREE.Group();
+    const staves = mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.8, 18), WOOD());
+    const bulge = mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.4, 18), WOOD());
+    g.add(staves, bulge);
+    for (const y of [-0.3, 0.3]) {
+      const hoop = mesh(new THREE.TorusGeometry(0.36, 0.025, 6, 20), IRON());
+      hoop.rotation.x = Math.PI / 2;
+      hoop.position.y = y;
+      g.add(hoop);
+    }
+    const head = mesh(new THREE.CircleGeometry(0.33, 18), mat('#3b2616'), { cast: false });
+    head.rotation.x = -Math.PI / 2;
+    head.position.y = 0.401;
+    g.add(head);
+    if (p.tipped) {
+      g.rotation.z = Math.PI / 2;
+      g.position.set(p.x, 0.38, p.y);
+      const pool = mesh(new THREE.CircleGeometry(0.55, 20), mat('#3a0810', 0.2), { cast: false });
+      pool.rotation.x = -Math.PI / 2;
+      pool.scale.set(1.4, 1, 1);
+      pool.position.set(p.x + 0.6, 0.01, p.y + 0.1);
+      const group = new THREE.Group();
+      group.add(g, pool);
+      return group;
+    }
+    g.position.set(p.x, 0.4, p.y);
+    return g;
+  },
+
+  chair(p) {
+    // The abbot's high-backed chair.
+    const g = new THREE.Group();
+    const seat = box(0.8, 0.1, 0.7, WOOD());
+    seat.position.y = 0.5;
+    const back = box(0.8, 1.4, 0.1, WOOD());
+    back.position.set(0, 1.1, 0.32);
+    const finial = mesh(new THREE.ConeGeometry(0.08, 0.25, 8), WOOD());
+    finial.position.set(0, 1.9, 0.32);
+    const cushion = box(0.7, 0.06, 0.6, mat('#5a1420'));
+    cushion.position.y = 0.58;
+    g.add(seat, back, finial, cushion);
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+      const leg = box(0.08, 0.5, 0.08, WOOD());
+      leg.position.set(sx * 0.35, 0.25, sz * 0.3);
+      g.add(leg);
+    }
+    for (const sx of [-1, 1]) {
+      const arm = box(0.08, 0.08, 0.7, WOOD());
+      arm.position.set(sx * 0.38, 0.85, 0);
+      g.add(arm);
+    }
+    g.rotation.y = p.rot ?? 0;
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  fallenRood(p) {
+    // The great rood cross, torn down and lying head-downward toward the nave.
+    const g = new THREE.Group();
+    const wood = mat('#4a3020', 0.8);
+    const beam = box(3.4, 0.2, 0.3, wood);
+    beam.position.y = 0.1;
+    const bar = box(0.3, 0.2, 1.8, wood);
+    bar.position.set(-0.9, 0.1, 0);
+    const gild = mat('#a88a3a', 0.35, 0.8);
+    for (const [x, z] of [[1.7, 0], [-0.9, 0.9], [-0.9, -0.9], [-1.7, 0]]) {
+      const cap = box(0.34, 0.22, 0.34, gild);
+      cap.position.set(x, 0.11, z);
+      g.add(cap);
+    }
+    const corpus = mesh(new THREE.CapsuleGeometry(0.1, 0.8, 4, 8), mat('#b9a98c'));
+    corpus.rotation.z = Math.PI / 2;
+    corpus.position.set(-0.2, 0.28, 0);
+    g.add(beam, bar, corpus);
+    g.rotation.y = p.rot ?? 0;
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  lectern(p) {
+    // An eagle lectern, knocked over.
+    const g = new THREE.Group();
+    const brass = mat('#8f7434', 0.35, 0.8);
+    const post = mesh(new THREE.CylinderGeometry(0.05, 0.08, 1.2, 8), brass);
+    post.rotation.z = Math.PI / 2;
+    post.position.y = 0.1;
+    const eagle = mesh(new THREE.ConeGeometry(0.18, 0.5, 8), brass);
+    eagle.rotation.z = -Math.PI / 2;
+    eagle.position.set(0.75, 0.15, 0);
+    const wings = box(0.25, 0.04, 0.8, brass);
+    wings.position.set(0.65, 0.12, 0);
+    const book = box(0.35, 0.06, 0.45, mat('#5a2a1a'));
+    book.position.set(1.1, 0.03, 0.4);
+    book.rotation.y = 0.6;
+    g.add(post, eagle, wings, book);
+    g.rotation.y = p.rot ?? 0;
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  font(p) {
+    // Octagonal baptismal font, its water fouled with wine.
+    const g = new THREE.Group();
+    const stone = mat('#8a8276');
+    const foot = mesh(new THREE.CylinderGeometry(0.25, 0.35, 0.5, 8), stone);
+    foot.position.y = 0.25;
+    const bowl = mesh(new THREE.CylinderGeometry(0.55, 0.4, 0.45, 8), stone);
+    bowl.position.y = 0.72;
+    const liquid = mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.02, 8), mat('#3a0810', 0.15), { cast: false });
+    liquid.position.y = 0.9;
+    g.add(foot, bowl, liquid);
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  toppledStatue(p) {
+    // A saint thrown from his niche, face down on the flags.
+    const g = new THREE.Group();
+    const stone = mat('#9c9486', 0.9);
+    const body = mesh(new THREE.CylinderGeometry(0.2, 0.28, 1.4, 12), stone);
+    body.rotation.z = Math.PI / 2;
+    body.position.y = 0.26;
+    const head = mesh(new THREE.SphereGeometry(0.15, 10, 8), stone);
+    head.position.set(0.85, 0.16, 0);
+    const halo = mesh(new THREE.TorusGeometry(0.2, 0.03, 6, 16), mat('#a88a3a', 0.4, 0.7));
+    halo.rotation.y = Math.PI / 2;
+    halo.position.set(1.0, 0.2, 0);
+    const plinth = box(0.4, 0.3, 0.4, stone);
+    plinth.position.set(-0.95, 0.15, 0.1);
+    plinth.rotation.y = 0.4;
+    g.add(body, head, halo, plinth);
+    g.rotation.y = p.rot ?? 0;
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  chest(p) {
+    const g = new THREE.Group();
+    const body = box(1.0, 0.5, 0.55, WOOD());
+    body.position.y = 0.25;
+    const inside = mesh(new THREE.PlaneGeometry(0.9, 0.45), mat('#140d08'), { cast: false });
+    inside.rotation.x = -Math.PI / 2;
+    inside.position.y = 0.505;
+    const lid = box(1.0, 0.06, 0.55, WOOD());
+    lid.position.set(0, 0.8, 0.3);
+    lid.rotation.x = -1.3;
+    g.add(body, inside, lid);
+    // vestments strewn beside it
+    const cope = mesh(new THREE.CircleGeometry(0.55, 16, 0, Math.PI), mat('#4b1d5c', 0.95), { cast: false });
+    cope.rotation.x = -Math.PI / 2;
+    cope.position.set(0.9, 0.02, 0.3);
+    g.add(cope);
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  bell(p) {
+    // The abbey bell, cut down; it will not ring for the dead.
+    const g = new THREE.Group();
+    const bronze = mat('#7a5a2a', 0.4, 0.8);
+    const b = mesh(new THREE.CylinderGeometry(0.35, 0.6, 0.9, 20, 1, true), bronze);
+    b.rotation.z = Math.PI / 2 - 0.2;
+    b.position.y = 0.55;
+    const crown = mesh(new THREE.SphereGeometry(0.35, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), bronze);
+    crown.rotation.z = Math.PI / 2 - 0.2;
+    crown.position.set(-0.45, 0.62, 0);
+    const rope = mesh(new THREE.CylinderGeometry(0.03, 0.03, 1.4, 6), mat('#8a7550'));
+    rope.rotation.set(0, 0.8, Math.PI / 2);
+    rope.position.set(-0.7, 0.05, 0.5);
+    g.add(b, crown, rope);
+    g.position.set(p.x, 0, p.y);
+    return g;
+  },
+
+  spiralStair(p) {
+    const g = new THREE.Group();
+    const stone = mat('#7b746a');
+    const newel = mesh(new THREE.CylinderGeometry(0.1, 0.1, 3, 10), stone);
+    newel.position.y = 1.5;
+    g.add(newel);
+    for (let i = 0; i < 10; i++) {
+      const step = box(0.8, 0.12, 0.35, stone);
+      const a = (i / 10) * Math.PI * 1.6;
+      step.position.set(Math.cos(a) * 0.4, 0.2 + i * 0.28, Math.sin(a) * 0.4);
+      step.rotation.y = -a;
+      g.add(step);
+    }
+    g.position.set(p.x + 0.5, 0, p.y + 0.5);
+    return g;
+  },
 };
 
 export function buildProp(p, rand) {

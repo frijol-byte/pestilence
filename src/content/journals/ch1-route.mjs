@@ -107,7 +107,7 @@ ${readAloud(
 <h2>If they do not</h2>
 <p>There is no treasure worth the name: a rusted harness of plate, two pitchforks, a heel of black bread in Mahaut's apron that she was saving for her children, and the ring on Bertrand's finger. Describe the silence afterwards. Describe the crows.</p>
 <h2>Onward</h2>
-<p>The road continues up the Garonne toward Toulouse. Any PC exposed to ${peste} begins rolling saves after its 1-day onset. Track it.</p>`,
+<p>The road continues up the Garonne. By dusk it reaches the crossroads town of Langon: continue with ${link(uuid.journal('ch1-langon'), 'III. Langon')}. Any PC exposed to ${peste} begins rolling saves after its 1-day onset. Track it.</p>`,
     },
   ],
 });
