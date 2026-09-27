@@ -2,7 +2,7 @@
   "id": "pestilence",
   "title": "Pestilence",
   "description": "A Pathfinder Second Edition adventure set in a plague-ravaged medieval France, where demons and devils feed on a dying kingdom.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "url": "https://github.com/frijol-byte/pestilence",
   "manifest": "https://raw.githubusercontent.com/frijol-byte/pestilence/main/module/pestilence/module.json",
   "download": "https://raw.githubusercontent.com/frijol-byte/pestilence/main/release/pestilence.zip",

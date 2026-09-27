@@ -242,6 +242,9 @@ Rules:
 - Lights are both baked softly into the image and emitted as animated Foundry lights; keep
   magical lights mostly to Foundry (baked at reduced strength).
 - Every map should carry the scene's symbolism in its floor features and props.
+- **No writing on maps.** Never paint text, inscriptions, graffiti or lettering onto map
+  images; carry words in the journal instead. (The `crypte-saint-roch` sandbox predates this rule.)
+- Maps don't need an outside approach; the party can start inside (e.g. in a porch).
 
 ### Content pipeline (journals, actors, items)
 Content is authored as JS modules and compiled by `npm run build` into four compendiums:

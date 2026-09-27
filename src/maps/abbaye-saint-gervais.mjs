@@ -48,14 +48,12 @@ export default {
     { type: 'stainedLight', x: 13.5, y: 13.4, colors: ['#b8282a', '#d8a830', '#2d4fa0'] },
     { type: 'stainedLight', x: 16.5, y: 13.4, colors: ['#3e8a4a', '#b8282a', '#2d4fa0'] },
     // tomb slabs of the abbots, set in the nave floor
-    { type: 'tombSlab', x: 9.5, y: 9.5, text: 'HIC IACET' },
-    { type: 'tombSlab', x: 12.5, y: 9.5, text: 'ORATE PRO EO' },
+    { type: 'tombSlab', x: 9.5, y: 9.5 },
+    { type: 'tombSlab', x: 12.5, y: 9.5 },
     // the desecration
     { type: 'wineTrail', from: [22.8, 7.4], to: [27, 9.6] },
     { type: 'wineTrail', from: [21, 10.5], to: [11, 10.2] },
     { type: 'wineTrail', from: [8, 10], to: [4.2, 12.2] },
-    { type: 'graffiti', x: 24.6, y: 10.6, text: 'HOC EST CORPUS', size: 0.34, rot: -0.12, color: '#6e1016' },
-    { type: 'graffiti', x: 14, y: 11.1, text: 'BIBAMVS', size: 0.4, rot: 0.08, color: '#6e1016' },
     { type: 'flies', x: 27.4, y: 10, r: 1.5, n: 120 },
     { type: 'flies', x: 9.8, y: 5.6, r: 2.2, n: 90 },
   ],

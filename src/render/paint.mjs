@@ -557,12 +557,6 @@ const FEATURES = {
     ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx + PX * 0.28, cy + h * 0.32); ctx.lineTo(cx + PX * 0.28, cy - h * 0.32);
     ctx.arc(cx + PX * 0.2, cy - h * 0.32, PX * 0.08, 0, Math.PI, true); ctx.stroke();
-    ctx.translate(cx - w / 2 + 12, cy);
-    ctx.rotate(-Math.PI / 2);
-    ctx.font = `600 ${PX * 0.11}px Georgia, serif`;
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#2e2a26';
-    ctx.fillText(f.text, 0, 4, h - 20);
     ctx.restore();
   },
 
